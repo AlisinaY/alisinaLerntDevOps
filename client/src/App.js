@@ -12,7 +12,7 @@ function App() {
   }, []);
 
   async function checkLogin() {
-    const res = await fetch("http://172.31.47.232:3001/api/products", {
+    const res = await fetch("http://backend:3001/api/products", {
       credentials: "include"
     });
     if (res.ok) {
@@ -24,7 +24,7 @@ function App() {
 
   async function login(e) {
     e.preventDefault();
-    const res = await fetch("http://172.31.47.232:3001/api/login", {
+    const res = await fetch("http://backend:3001/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -40,7 +40,7 @@ function App() {
 
   async function register(e) {
     e.preventDefault();
-    const res = await fetch("http://172.31.47.232:3001/api/register", {
+    const res = await fetch("http://backend:3001/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -55,7 +55,7 @@ function App() {
   }
 
   async function logout() {
-    await fetch("http://172.31.47.232:3001/api/logout", {
+    await fetch("http://backend:3001/api/logout", {
       method: "POST",
       credentials: "include"
     });
@@ -141,7 +141,7 @@ function UploadForm({ onUploaded }) {
     formData.append("price", price);
     formData.append("image", image);
 
-    const res = await fetch("http://172.31.47.232:3001/api/products", {
+    const res = await fetch("http://backend:3001/api/products", {
       method: "POST",
       body: formData,
       credentials: "include"
@@ -181,13 +181,10 @@ function UploadForm({ onUploaded }) {
 
 function ProductItem({ product, onDeleted }) {
   async function handleDelete() {
-    const res = await fetch(
-      `http://172.31.47.232:3001/api/products/${product._id}`,
-      {
-        method: "DELETE",
-        credentials: "include"
-      }
-    );
+    const res = await fetch(`http://backend:3001/api/products/${product._id}`, {
+      method: "DELETE",
+      credentials: "include"
+    });
     if (res.ok) onDeleted();
   }
 
