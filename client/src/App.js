@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 
+const API_URL = ProcessingInstruction.env.REACT_APP_API_URL;
+
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [products, setProducts] = useState([]);
@@ -12,7 +14,7 @@ function App() {
   }, []);
 
   async function checkLogin() {
-    const res = await fetch("http://backend:3001/api/products", {
+    const res = await fetch(`${API_URL}/api/products`, {
       credentials: "include"
     });
     if (res.ok) {
@@ -24,7 +26,7 @@ function App() {
 
   async function login(e) {
     e.preventDefault();
-    const res = await fetch("http://backend:3001/api/login", {
+    const res = await fetch(`${API_URL}/api/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -40,7 +42,7 @@ function App() {
 
   async function register(e) {
     e.preventDefault();
-    const res = await fetch("http://backend:3001/api/register", {
+    const res = await fetch(`${API_URL}/api/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -55,7 +57,7 @@ function App() {
   }
 
   async function logout() {
-    await fetch("http://backend:3001/api/logout", {
+    await fetch(`${API_URL}/api/logout`, {
       method: "POST",
       credentials: "include"
     });
@@ -141,7 +143,7 @@ function UploadForm({ onUploaded }) {
     formData.append("price", price);
     formData.append("image", image);
 
-    const res = await fetch("http://backend:3001/api/products", {
+    const res = await fetch(`${API_URL}/api/products`, {
       method: "POST",
       body: formData,
       credentials: "include"
@@ -181,7 +183,7 @@ function UploadForm({ onUploaded }) {
 
 function ProductItem({ product, onDeleted }) {
   async function handleDelete() {
-    const res = await fetch(`http://backend:3001/api/products/${product._id}`, {
+    const res = await fetch(`${API_URL}/api/products/${product._id}`, {
       method: "DELETE",
       credentials: "include"
     });

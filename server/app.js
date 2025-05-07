@@ -15,7 +15,7 @@ const User = require("./models/User.js");
 const app = express();
 
 // Middleware
-app.use(cors({ origin: "http://frontend:3000", credentials: true }));
+app.use(cors({ origin: `${process.env.API_URL}/3000`, credentials: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
