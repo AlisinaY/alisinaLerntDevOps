@@ -1,28 +1,48 @@
 version: "3.8"
-version: "3.8"
 
 services:
   mongo:
-    image: mongo
+    image: mongo:6.0 # Feste Version statt „latest“
+    restart: unless-stopped # Automatischer Neustart
     ports:
       - "27017:27017"
+    volumes:
+      - mongo-data:/data/db # Datenpersistenz
+    healthcheck: # Healthcheck für Abfragen
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   backend:
-    build: ./server
-    ports:
-      - "3001:3001"
-    env_file:
-      - .env
+    build:
+      context: ./server
+      dockerfile: Dockerfile # explizit angeben
+    image: nginx-server:latest
+    restart: unless-stopped
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
+    networks:
+      - backend
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/ecommerce # Verbindungsstring
 
   frontend:
     build:
       context: ./client
       args:
-        # falls du im Code dennoch ENV nutzt, sonst entfällt
-        REACT_APP_API_URL: http://backend:3001
+        REACT_APP_SERVICES_HOST: /services/m
+      dockerfile: Dockerfile
+    image: nginx-client:latest
+    restart: unless-stopped
     ports:
-      - "3000:80"
+      - "80:80"
+    networks:
+      - frontend
+      - backend
     depends_on:
       - backend
+
+networks:
+  frontend:
